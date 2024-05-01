@@ -66,22 +66,22 @@ public class Lexer {
     }
     
     // Expressão regular para identificar identificadores
-    private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
+    private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*");
 
     // Expressão regular para identificar números inteiros
     private static final Pattern NUMBER_PATTERN = Pattern.compile("\\d+(\\.\\d+)?");
     
     // Método para tokenizar o texto de entrada
-    public static ArrayList<TokenType> tokenize(String input) {
+    public static ArrayList<Token> tokenize(String input) {
         String[] tokensString = input.split("\\s+"); // Divide o texto por espaços em branco
-        ArrayList<TokenType> tokens = new ArrayList<TokenType>();
+        ArrayList<Token> tokens = new ArrayList<Token>();
         // Imprimir cabeçalhos da tabela
         System.out.println("| Token        | Tipo             |");
         System.out.println("+--------------+------------------+");
 
         for (String token : tokensString) {
             TokenType type = getTokenType(token);
-            tokens.add(type);
+            tokens.add(new Token(token, type));
             System.out.printf("| %-12s | %-16s |\n", token, type);
         }
 

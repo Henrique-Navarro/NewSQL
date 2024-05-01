@@ -13,14 +13,18 @@ import java.util.ArrayList;
  */
 public class Main {
     public static void main(String[] args){
-        String input = "CREATE TABLE tabelinha SELECT * FROM table1 WHERE column1 = 123 "+
+        String input = "CREATE TABLE tabelinha USE SELECT * FROM table1 WHERE column1 = 123 "+
                 "INSERT DELETE UPDATE FROM WHERE GROUP_BY ORDER_BY LIMIT DISTINCT CREATE ALTER DROP "+
                 "AND OR NOT NULL TRUE FALSE IF "+
                 "USE SHOW DESCRIBE "+
                 "INT FLOAT TEXT BOOL "+
                 "tabela ( ) , ; * 12 12.319 & ! teste123 123teste";
         
-        ArrayList<TokenType>tokens = Lexer.tokenize(input);
+        
+        
+        input = "CREATE TABLE tabela_teste ( coluna int ) ;";
+        
+        ArrayList<Token>tokens = Lexer.tokenize(input);
         Parser parser = new Parser(tokens);
         parser.parse();
     }

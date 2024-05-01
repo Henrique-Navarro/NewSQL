@@ -9,5 +9,11 @@ package newsql;
  * @author henri
  */
 public class Token {
+    public String valor;
+    public TokenType tipo;
     
+    Token(String valor, TokenType tipo){
+        this.valor = valor;
+        this.tipo = tipo;
+    }
 }

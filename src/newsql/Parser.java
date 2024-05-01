@@ -11,17 +11,17 @@ package newsql;
 import java.util.List;
 
 public class Parser {
-    private List<TokenType> tokens;
+    private List<Token> tokens;
     private int currentPosition;
 
-    public Parser(List<TokenType> tokens) {
+    public Parser(List<Token> tokens) {
         this.tokens = tokens;
         this.currentPosition = 0;
     }
 
     public void parse() {
         while (currentPosition < tokens.size()) {
-            TokenType tokenType = tokens.get(currentPosition);
+            TokenType tokenType = tokens.get(currentPosition).tipo;
             switch (tokenType) {
                 case CREATE:
                     parseCreateStatement();
@@ -32,7 +32,7 @@ public class Parser {
                 case INSERT:
                     parseInsertStatement();
                     break;
-                case DELETE:
+                case DELETE:    
                     parseDeleteStatement();
                     break;
                 case UPDATE:
@@ -42,16 +42,21 @@ public class Parser {
                     parseFromClause();
                     break;
                 // Adicionar casos para os demais tipos de token
+                case PONTO_VIRGULA:
+                    currentPosition++;
+                    break;
                 default:
-                    // Tratar erro: token inesperado
+                    currentPosition++;
+                    TabelaService.selectTabela();
                     break;
             }
+            //break;
         }
     }
 
     private void parseCreateStatement() {
         if (currentPosition + 1 < tokens.size()) {
-            TokenType nextTokenType = tokens.get(currentPosition + 1);
+            TokenType nextTokenType = tokens.get(currentPosition + 1).tipo;
             if (nextTokenType == TokenType.TABLE) {
                 currentPosition += 2; // Avança para o token após "TABLE"
                 parseIdentifier(); // Chama o método para analisar o identificador da tabela
@@ -64,17 +69,29 @@ public class Parser {
         }
     }
     
+    boolean nao_acabou(){
+        return currentPosition < tokens.size();
+    }
+    
+    //fazer funções assim para verificar o proximo token
+    boolean check_IDENTIFIER(int posic){
+        return tokens.get(posic).tipo == TokenType.IDENTIFIER;
+    }
+    
     private void parseIdentifier() {
-        if (currentPosition < tokens.size() && tokens.get(currentPosition) == TokenType.IDENTIFIER) {
-            System.out.println("tabelinha de nome "+tokens.get(currentPosition));
+        if (nao_acabou() && check_IDENTIFIER(currentPosition)) {
+            //System.out.println("tabela de nome "+tokens.get(currentPosition).valor);
+            String[] colunas = {"Nome", "Idade", "Cidade"};
+            TabelaService.createTabela(colunas);            
         } else {
             // Tratar erro: esperado um identificador
         }
     }
     
     private void parseCreateTableStatement() {
-            
-        System.out.print("tabela com nome de "+tokens.get(currentPosition));
+        //String[] colunas = {"Nome", "Idade", "Cidade"};
+       //TabelaService.createTabela(colunas);
+        //System.out.print("tabela com nome de "+tokens.get(currentPosition));
     }
 
     private void parseSelectStatement() {
