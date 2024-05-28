@@ -12,8 +12,10 @@ import java.util.ArrayList;
  * @author henri
  */
 public class Main {
-    public static void main(String[] args){
-        String input = "CREATE TABLE tabelinha USE SELECT * FROM table1 WHERE column1 = 123 "+
+    public static void main(String[] args)
+    {
+        try{
+           String query = "CREATE TABLE tabelinha USE SELECT * FROM table1 WHERE column1 = 123 "+
                 "INSERT DELETE UPDATE FROM WHERE GROUP_BY ORDER_BY LIMIT DISTINCT CREATE ALTER DROP "+
                 "AND OR NOT NULL TRUE FALSE IF "+
                 "USE SHOW DESCRIBE "+
@@ -22,10 +24,14 @@ public class Main {
         
         
         
-        input = "CREATE TABLE tabela_teste ( coluna int ) ;";
-        
-        ArrayList<Token>tokens = Lexer.tokenize(input);
-        Parser parser = new Parser(tokens);
-        parser.parse();
+            query = "CREATE AND and TABLE tabela_teste(coluna int) 10 10.23 10.09 ; Pow POW() pow";
+
+            ArrayList<Token>tokens = Lexer.tokenize(query);
+            Parser parser = new Parser(tokens);
+            parser.parse(); 
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 }

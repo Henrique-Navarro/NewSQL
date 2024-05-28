@@ -12,7 +12,9 @@ public enum TokenType {
         // Palavras reservadas
         SELECT, INSERT, DELETE, UPDATE, FROM, WHERE, GROUP_BY, ORDER_BY, LIMIT, DISTINCT, CREATE, ALTER, DROP, TABLE,
         // Condições
-        AND, OR, NOT, NULL, TRUE, FALSE, IF,
+        AND, OR, NOT, NULL, TRUE, FALSE, IF, IS, MAIOR, MENOR,
+        //OPERADORES
+        MAIS, MENOS, VEZES, DIVIDIR,
         // Outros
         USE, SHOW, DESCRIBE,
         // Tipos de dados
@@ -23,6 +25,7 @@ public enum TokenType {
         ABRE_PARENTESES, FECHA_PARENTESES, VIRGULA, PONTO_VIRGULA, ASTERISCO, EQUAL,
         // Número
         NUMBER,
-        // Token desconhecido
-        UNKNOWN
+        
+        // FUNÇÕES
+        PI, CEIL, FLOOR, POW, SQRT, 
     }
