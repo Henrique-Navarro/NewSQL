@@ -4,12 +4,13 @@
  */
 package newsql;
 
+import Token.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import newsql.Exception.IllegalCharacter;
+import Exception.IllegalCharacter;
 
 public class Lexer {    
     private static final Pattern TOKEN_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*|\\d+(\\.\\d+)?|\\S");
@@ -30,6 +31,8 @@ public class Lexer {
             TokenType type = getTokenType(token);
             tokens.add(new Token(token, type));
         }
+        tokens.add(new Token("", TokenType.EOF));
+
         print(tokens);
 
         return tokens;
@@ -57,7 +60,7 @@ public class Lexer {
             return TokenType.NUMBER;
         } 
             
-        throw new IllegalCharacter("Sintax Error - illegal character '" + token +"'");
+        throw new IllegalCharacter(token);
     }
 
     private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9_]*");
@@ -97,8 +100,8 @@ public class Lexer {
         System.out.println("+--------------+------------------+");
 
         for (Token token : tokens) {
-            String valor = token.getValor();
-            TokenType type = token.getTipo();
+            String valor = token.getValue();
+            TokenType type = token.getType();
             System.out.printf("| %-12s | %-16s |\n", valor, type);
         }
 

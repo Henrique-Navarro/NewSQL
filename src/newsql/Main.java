@@ -1,5 +1,6 @@
 package newsql;
 
+import Token.Token;
 import java.util.ArrayList;
 
 /*
@@ -20,11 +21,11 @@ public class Main {
                 "AND OR NOT NULL TRUE FALSE IF "+
                 "USE SHOW DESCRIBE "+
                 "INT FLOAT TEXT BOOL "+
-                "tabela ( ) , ; * 12 12.319 & ! teste123 123teste";
+                "tabela ( ) , ; * 12 12.319 & ! teste123 123teste > ";
         
         
         
-            query = "CREATE AND and TABLE tabela_teste(coluna int) 10 10.23 10.09 ; Pow POW() pow";
+            query = "CREATE AND and TABLE tabela_teste(coluna int) 10 10.23 10.09 ; Pow POW() pow >> < + DIV MULT";
 
             ArrayList<Token>tokens = Lexer.tokenize(query);
             Parser parser = new Parser(tokens);

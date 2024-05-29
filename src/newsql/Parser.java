@@ -8,109 +8,104 @@ package newsql;
  *
  * @author henri
  */
+import Token.*;
+import Statement.SelectStatement;
 import java.util.List;
+import Statement.*;
+import Exception.*;
 
 public class Parser {
     private List<Token> tokens;
-    private int currentPosition;
+    private int current;
 
-    public Parser(List<Token> tokens) {
+    public Parser(List<Token> tokens)
+    {
         this.tokens = tokens;
-        this.currentPosition = 0;
+        this.current = 0;
     }
 
-    public void parse() {
-        while (currentPosition < tokens.size()) {
-            TokenType tokenType = tokens.get(currentPosition).tipo;
-            switch (tokenType) {
-                case CREATE:
-                    parseCreateStatement();
-                    break;
-                case SELECT:
-                    parseSelectStatement();
-                    break;
-                case INSERT:
-                    parseInsertStatement();
-                    break;
-                case DELETE:    
-                    parseDeleteStatement();
-                    break;
-                case UPDATE:
-                    parseUpdateStatement();
-                    break;
-                case FROM:
-                    parseFromClause();
-                    break;
-                // Adicionar casos para os demais tipos de token
-                case PONTO_VIRGULA:
-                    currentPosition++;
-                    break;
-                default:
-                    currentPosition++;
-                    TabelaService.selectTabela();
-                    break;
+    /**
+     * Parses the list of tokens into statements.
+     */    
+    public void parse()
+    {
+        while (!isAtEnd()) {
+            parseStatement();
+        }
+    }
+    
+    private boolean match(TokenType... types)
+    {
+        for (TokenType type : types) {
+            if (check(type)) {
+                advance();
+                return true;
             }
-            //break;
         }
+        return false;
     }
-
-    private void parseCreateStatement() {
-        if (currentPosition + 1 < tokens.size()) {
-            TokenType nextTokenType = tokens.get(currentPosition + 1).tipo;
-            if (nextTokenType == TokenType.TABLE) {
-                currentPosition += 2; // Avança para o token após "TABLE"
-                parseIdentifier(); // Chama o método para analisar o identificador da tabela
-                // Aqui você pode adicionar mais lógica, se necessário
-            } else {
-                // Tratar erro: token inesperado após "CREATE"
-            }
-        } else {
-            // Tratar erro: fim inesperado do código após "CREATE"
+    
+    private boolean check(TokenType type)
+    {
+        if (isAtEnd()) return false;
+        return peek().getType() == type;
+    }
+    
+    private Token advance()
+    {
+        if (!isAtEnd()) current++;
+        return previous();
+    }
+    
+    private boolean isAtEnd()
+    {
+        return peek().getType() == TokenType.EOF;
+    }
+    
+    private Token peek()
+    {
+        return tokens.get(current);
+    }
+    
+    private Token previous()
+    {
+        return tokens.get(current - 1);
+    }
+    
+    private Token consume(TokenType type, String message)
+    {
+        if (check(type)) return advance();
+        throw error(peek(), message);
+    }
+    
+    private ParseError error(Token token, String message)
+    {
+        return new ParseError(token, message);
+    }
+    
+    /**
+     * Parses a statement based on the current token.
+     *
+     * @throws ParseError if the statement is not recognized
+     */
+    private void parseStatement()
+    {
+        if (match(TokenType.SELECT)) {
+            new SelectStatement(this).parseSelectStatement();
         }
-    }
-    
-    boolean nao_acabou(){
-        return currentPosition < tokens.size();
-    }
-    
-    //fazer funções assim para verificar o proximo token
-    boolean check_IDENTIFIER(int posic){
-        return tokens.get(posic).tipo == TokenType.IDENTIFIER;
-    }
-    
-    private void parseIdentifier() {
-        if (nao_acabou() && check_IDENTIFIER(currentPosition)) {
-            //System.out.println("tabela de nome "+tokens.get(currentPosition).valor);
-            String[] colunas = {"Nome", "Idade", "Cidade"};
-            TabelaService.createTabela(colunas);            
-        } else {
-            // Tratar erro: esperado um identificador
+        if (match(TokenType.USE)) {
+            new UseStatement(this).parseUseStatement();
         }
-    }
-    
-    private void parseCreateTableStatement() {
-        //String[] colunas = {"Nome", "Idade", "Cidade"};
-       //TabelaService.createTabela(colunas);
-        //System.out.print("tabela com nome de "+tokens.get(currentPosition));
-    }
-
-    private void parseSelectStatement() {
-        // Implementar análise sintática para SELECT
-    }
-
-    private void parseInsertStatement() {
-        // Implementar análise sintática para INSERT
-    }
-
-    private void parseDeleteStatement() {
-        // Implementar análise sintática para DELETE
-    }
-
-    private void parseUpdateStatement() {
-        // Implementar análise sintática para UPDATE
-    }
-
-    private void parseFromClause() {
-        // Implementar análise sintática para FROM
+        if (match(TokenType.DROP)) {
+            new DropStatement(this).parseDropStatement();
+        }
+        if (match(TokenType.SHOW)) {
+            new ShowStatement(this).parseShowStatement();
+        } 
+        if (match(TokenType.CREATE)) {
+            new CreateStatement(this).parseCreateStatement();
+        }
+        
+        throw error(peek(), "Unexpected statement.");
     }
 }

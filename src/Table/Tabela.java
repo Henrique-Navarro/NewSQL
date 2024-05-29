@@ -1,4 +1,4 @@
-package newsql;
+package Table;
 
 public class Tabela {
     String[] colunas;
